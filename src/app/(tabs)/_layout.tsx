@@ -47,7 +47,8 @@ export default function TabsLayout() {
           key={tab.name}
           name={tab.name}
           options={{
-            title: tab.name,
+            title: tab.title,
+            tabBarAccessibilityLabel: tab.title,
             tabBarIcon: ({ focused }) => (
               <TabIcon focused={focused} icon={tab.icon} />
             ),
