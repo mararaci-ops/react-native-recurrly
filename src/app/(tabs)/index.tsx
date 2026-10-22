@@ -7,7 +7,7 @@ const SafeAreaView = styled(RNSafeAreaView);
 export default function App() {
   return (
     <SafeAreaView className="flex-1 bg-background p-5">
-      <Text className="tex-xl font-bold text-success">
+      <Text className="text-xl font-bold text-success">
         Bienvenido a Suscripciones
       </Text>
       <Link
