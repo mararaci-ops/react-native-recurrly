@@ -1,9 +1,10 @@
-import { View, Text } from 'react-native';
+import { SafeAreaViewStyled } from "@/constants/pages";
+import { Text } from "react-native";
 
 export default function Settings() {
-	return (
-		<View>
-			<Text>Settings</Text>
-		</View>
-	);
+  return (
+    <SafeAreaViewStyled className="flex-1 bg-background p-5">
+      <Text>Settings</Text>
+    </SafeAreaViewStyled>
+  );
 }

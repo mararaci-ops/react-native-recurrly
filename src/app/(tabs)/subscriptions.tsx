@@ -1,10 +1,11 @@
-import { Text, View } from "react-native";
+import { SafeAreaViewStyled } from "@/constants/pages";
+import { Text } from "react-native";
 
 const Subscriptions = () => {
   return (
-    <View>
+    <SafeAreaViewStyled className="flex-1 bg-background p-5">
       <Text>Subscriptions</Text>
-    </View>
+    </SafeAreaViewStyled>
   );
 };
 
