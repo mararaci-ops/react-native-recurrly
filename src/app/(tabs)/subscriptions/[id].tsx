@@ -1,4 +1,5 @@
 import { Link, useLocalSearchParams } from "expo-router";
+import { fontFamilies } from "@/constants/fonts";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function SubscriptionDetailsScreen() {
@@ -10,7 +11,9 @@ export default function SubscriptionDetailsScreen() {
       <Text style={styles.description}>
         You are viewing subscription #{id ?? "unknown"}.
       </Text>
-      <Link href={"/"}>Pantalla de inicio</Link>
+      <Link className="font-sans-semibold" href={"/"}>
+        Pantalla de inicio
+      </Link>
     </View>
   );
 }
@@ -34,7 +37,7 @@ const styles = StyleSheet.create({
   },
   eyebrow: {
     fontSize: 12,
-    fontWeight: "700",
+    fontFamily: fontFamilies.bold,
     letterSpacing: 1.2,
     textTransform: "uppercase",
     color: "#6b7280",
@@ -42,7 +45,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: "700",
+    fontFamily: fontFamilies.bold,
     color: "#111827",
     marginBottom: 12,
   },
@@ -50,5 +53,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     color: "#374151",
+    fontFamily: fontFamilies.regular,
   },
 });

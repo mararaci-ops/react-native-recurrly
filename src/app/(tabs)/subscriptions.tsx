@@ -4,7 +4,7 @@ import { Text } from "react-native";
 const Subscriptions = () => {
   return (
     <SafeAreaViewStyled className="flex-1 bg-background p-5">
-      <Text>Subscriptions</Text>
+      <Text className="font-sans">Subscriptions</Text>
     </SafeAreaViewStyled>
   );
 };
