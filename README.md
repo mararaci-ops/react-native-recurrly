@@ -25,6 +25,24 @@ In the output, you'll find options to open the app in a
 
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
+## Tipografía Plus Jakarta Sans
+
+Las variantes `.ttf` se guardan en `assets/fonts` y se cargan al inicio desde
+`src/app/_layout.tsx` con `expo-font`. La app espera a que terminen de cargar
+antes de ocultar la pantalla de inicio. `expo-font` ya está instalado en este
+proyecto; para añadirlo a otro proyecto Expo, ejecuta `npx expo install expo-font`.
+
+Usa las utilidades NativeWind configuradas en `global.css`:
+
+```tsx
+<Text className="font-sans">Texto normal</Text>
+<Text className="font-sans-bold">Texto en negrita</Text>
+```
+
+También puedes elegir una variante en un `StyleSheet`, por ejemplo,
+`fontFamily: "sans-semibold"`. Las familias disponibles son `sans-regular`,
+`sans-light`, `sans-medium`, `sans-semibold`, `sans-bold` y `sans-extrabold`.
+
 ## Get a fresh project
 
 When you're ready, run:

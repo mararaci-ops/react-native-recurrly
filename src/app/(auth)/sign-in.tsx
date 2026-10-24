@@ -1,5 +1,6 @@
 import { Link } from "expo-router";
 import { useState } from "react";
+import { fontFamilies } from "@/constants/fonts";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -152,19 +153,19 @@ const styles = StyleSheet.create({
   brandMarkText: {
     color: "#167D68",
     fontSize: 27,
-    fontWeight: "800",
+    fontFamily: fontFamilies.extrabold,
   },
   eyebrow: {
     color: "#167D68",
     fontSize: 12,
-    fontWeight: "700",
+    fontFamily: fontFamilies.bold,
     letterSpacing: 2,
     marginBottom: 10,
   },
   title: {
     color: "#101828",
     fontSize: 32,
-    fontWeight: "700",
+    fontFamily: fontFamilies.bold,
     letterSpacing: -0.7,
   },
   subtitle: {
@@ -179,7 +180,7 @@ const styles = StyleSheet.create({
   label: {
     color: "#344054",
     fontSize: 14,
-    fontWeight: "600",
+    fontFamily: fontFamilies.semibold,
   },
   input: {
     height: 52,
@@ -190,6 +191,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     color: "#101828",
     fontSize: 15,
+    fontFamily: fontFamilies.regular,
     marginBottom: 12,
   },
   passwordLabelRow: {
@@ -201,7 +203,7 @@ const styles = StyleSheet.create({
   link: {
     color: "#167D68",
     fontSize: 13,
-    fontWeight: "600",
+    fontFamily: fontFamilies.semibold,
   },
   passwordInputWrap: {
     height: 52,
@@ -219,11 +221,12 @@ const styles = StyleSheet.create({
     height: "100%",
     color: "#101828",
     fontSize: 15,
+    fontFamily: fontFamilies.regular,
   },
   showPassword: {
     color: "#667085",
     fontSize: 13,
-    fontWeight: "600",
+    fontFamily: fontFamilies.semibold,
     marginLeft: 10,
   },
   button: {
@@ -240,11 +243,12 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: "700",
+    fontFamily: fontFamilies.bold,
   },
   footerText: {
     color: "#667085",
     fontSize: 14,
+    fontFamily: fontFamilies.regular,
     textAlign: "center",
     marginTop: 28,
   },

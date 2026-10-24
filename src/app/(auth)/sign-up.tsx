@@ -1,5 +1,6 @@
 import { Link } from "expo-router";
 import { useState } from "react";
+import { fontFamilies } from "@/constants/fonts";
 import {
     Alert,
     KeyboardAvoidingView,
@@ -123,7 +124,9 @@ export default function SignUpScreen() {
           <Text style={styles.footer}>
             Al registrarte, aceptas nuestros términos y condiciones.
           </Text>
-          <Link href={"/(auth)/sign-in"}>Iniciar sesión</Link>
+          <Link className="font-sans-semibold" href={"/(auth)/sign-in"}>
+            Iniciar sesión
+          </Link>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -142,12 +145,21 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: "#6257D9",
     fontSize: 12,
-    fontWeight: "700",
+    fontFamily: fontFamilies.bold,
     letterSpacing: 1.5,
     marginBottom: 10,
   },
-  title: { color: "#171A2B", fontSize: 32, fontWeight: "700", marginBottom: 8 },
-  subtitle: { color: "#707687", fontSize: 16 },
+  title: {
+    color: "#171A2B",
+    fontSize: 32,
+    fontFamily: fontFamilies.bold,
+    marginBottom: 8,
+  },
+  subtitle: {
+    color: "#707687",
+    fontSize: 16,
+    fontFamily: fontFamilies.regular,
+  },
   form: {
     backgroundColor: "#FFFFFF",
     borderRadius: 20,
@@ -158,7 +170,12 @@ const styles = StyleSheet.create({
     shadowRadius: 20,
     elevation: 3,
   },
-  label: { color: "#272B3A", fontSize: 14, fontWeight: "600", marginBottom: 8 },
+  label: {
+    color: "#272B3A",
+    fontSize: 14,
+    fontFamily: fontFamilies.semibold,
+    marginBottom: 8,
+  },
   input: {
     backgroundColor: "#F8F9FC",
     borderColor: "#E5E7EF",
@@ -166,6 +183,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     color: "#171A2B",
     fontSize: 15,
+    fontFamily: fontFamilies.regular,
     height: 50,
     marginBottom: 18,
     paddingHorizontal: 14,
@@ -178,10 +196,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 4,
   },
-  buttonText: { color: "#FFFFFF", fontSize: 16, fontWeight: "700" },
+  buttonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontFamily: fontFamilies.bold,
+  },
   footer: {
     color: "#858A98",
     fontSize: 12,
+    fontFamily: fontFamilies.regular,
     lineHeight: 18,
     marginTop: 18,
     textAlign: "center",

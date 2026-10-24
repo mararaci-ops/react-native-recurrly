@@ -1,4 +1,4 @@
-import TabIconLayout from "@/components/tabiconlayout";
+import TabIconLayout from "@/components/Tabiconlayout";
 import { tabs } from "@/constants/data";
 import { colors, components } from "@/constants/theme";
 import { Tabs } from "expo-router";
