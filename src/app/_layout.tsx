@@ -1,16 +1,25 @@
+import { fontFamilies } from "@/constants/fonts";
 import "@/global.css";
+import { ClerkProvider, useAuth } from "@clerk/expo";
+import { tokenCache } from "@clerk/expo/token-cache";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { Platform } from "react-native";
-import { fontFamilies } from "@/constants/fonts";
+import { Alert, Platform } from "react-native";
 
 if (Platform.OS !== "web") {
   SplashScreen.preventAutoHideAsync();
 }
 
-export default function RootLayout() {
+const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
+
+if (!publishableKey) {
+  throw new Error("Añadir la clave Publishable de Clerk al archivo .env");
+}
+
+function RootLayoutContent() {
+  const { isLoaded: authLoaded } = useAuth();
   const [fontsLoaded, fontError] = useFonts({
     [fontFamilies.regular]: require("../../assets/fonts/PlusJakartaSans-Regular.ttf"),
     [fontFamilies.light]: require("../../assets/fonts/PlusJakartaSans-Light.ttf"),
@@ -21,13 +30,26 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    if ((fontsLoaded || fontError) && Platform.OS !== "web") {
+    if (fontsLoaded || authLoaded) {
       SplashScreen.hideAsync();
     }
-  }, [fontsLoaded, fontError]);
+  }, [fontsLoaded, authLoaded]);
 
-  if (fontError) throw fontError;
-  if (!fontsLoaded) return null;
+  useEffect(() => {
+    if (fontError) {
+      Alert.alert("Error al cargar fuentes");
+    }
+  }, [fontError]);
+
+  if (!fontsLoaded || !authLoaded) return null;
 
   return <Stack screenOptions={{ headerShown: false }} />;
+}
+
+export default function RootLayout() {
+  return (
+    <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
+      <RootLayoutContent />
+    </ClerkProvider>
+  );
 }

@@ -56,7 +56,7 @@
   }
 
   .tabs-glyph {
-    @apply size-6;
+    @apply h-6 w-6;
   }
 
   .home-header {
