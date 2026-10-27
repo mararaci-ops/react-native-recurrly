@@ -34,8 +34,11 @@ Create a Clerk application and configure it to:
 3. Add the application's publishable key to a local `.env` file:
 
    ```env
-   EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+   EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_REPLACE_ME
    ```
+
+   Start by copying `.env.example` to `.env`, then replace the placeholder with
+   the publishable key from your Clerk Dashboard.
 
 The custom screens support email verification, password reset, and email/SMS codes, authenticator codes, backup codes, passkeys, and device-trust verification. Sign-up stores the entered name in the user's `unsafeMetadata.displayName` field so it does not depend on optional name fields being enabled in Clerk. Do not commit `.env` or place a Clerk secret key in any `EXPO_PUBLIC_` variable.
 

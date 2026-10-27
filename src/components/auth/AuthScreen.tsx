@@ -45,7 +45,7 @@ export function AuthScreen({
               </View>
               <View className="items-start">
                 <Text className="mt-3 font-sans-bold text-lg tracking-wide text-primary">
-                  RECURLY1
+                  RECURLY
                 </Text>
                 <Text className="mt-0.5 font-sans text-xs tracking-widest text-muted-foreground">
                   SMART BILLING

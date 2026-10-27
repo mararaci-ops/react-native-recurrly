@@ -363,7 +363,7 @@ export default function SignInScreen() {
         : step === "reset-password"
           ? "Crea una contraseña nueva"
           : step === "sign-in"
-            ? "Qué bueno verte"
+            ? "Qué alegría verte"
             : "Recupera tu cuenta";
   const subtitle =
     step === "mfa"

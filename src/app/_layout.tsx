@@ -30,19 +30,17 @@ function RootLayoutContent() {
   });
 
   useEffect(() => {
-    if ((fontsLoaded || fontError) && Platform.OS !== "web") {
+    if (fontsLoaded || authLoaded) {
       SplashScreen.hideAsync();
     }
-  }, [fontsLoaded, fontError]);
+  }, [fontsLoaded, authLoaded]);
 
-  //if (fontError) throw fontError;
+  useEffect(() => {
+    if (fontError) {
+      Alert.alert("Error al cargar fuentes");
+    }
+  }, [fontError]);
 
-  if (fontError) {
-    console.log(fontError);
-    Alert.alert("Error al cargar fuentes");
-  }
-
-  // if (!fontsLoaded) return null;
   if (!fontsLoaded || !authLoaded) return null;
 
   return <Stack screenOptions={{ headerShown: false }} />;

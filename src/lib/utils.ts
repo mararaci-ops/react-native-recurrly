@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 const utcDateFormatter = new Intl.DateTimeFormat("es-ES", {
   day: "2-digit",
   month: "2-digit",
@@ -42,7 +44,10 @@ export const formatoMoneda = (
 
 export const formatSubscriptionDateTime = (value?: string): string => {
   if (!value) return "Not provided";
-  return formatUtcDate(new Date(value));
+  const parsedDate = dayjs(value);
+  return parsedDate.isValid()
+    ? parsedDate.format("DD/MM/YYYY")
+    : "Not provided";
 };
 
 export const formatoFechaString = (value?: string): string => {
