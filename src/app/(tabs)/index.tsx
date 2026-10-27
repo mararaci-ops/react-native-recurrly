@@ -4,15 +4,24 @@ import UpcomingSubscriptionCard from "@/components/UpcomingSubscriptionCard";
 import {
   HOME_BALANCE,
   HOME_SUBSCRIPTIONS,
-  HOME_USER,
   UPCOMING_SUBSCRIPTIONS,
 } from "@/constants/data";
 import { icons } from "@/constants/icons";
 import images from "@/constants/images";
 import { SafeAreaViewStyled } from "@/constants/pages";
+import { getAuthErrorMessage } from "@/lib/auth";
 import { formatoFechaString, formatoMoneda } from "@/lib/utils";
+import { useAuth, useUser } from "@clerk/expo";
 import { useState } from "react";
-import { Image, ScrollView, SectionList, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  Pressable,
+  ScrollView,
+  SectionList,
+  Text,
+  View,
+} from "react-native";
 
 const subscriptionSections = [
   {
@@ -23,9 +32,38 @@ const subscriptionSections = [
 ];
 
 export default function App() {
+  const { signOut } = useAuth();
+  const { user } = useUser();
+  const [isSigningOut, setIsSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState("");
   const [expandedSubscriptionId, setExpandedSubscriptionId] = useState<
     string | null
   >(null);
+
+  const handleSignOut = async () => {
+    setIsSigningOut(true);
+    setSignOutError("");
+
+    try {
+      await signOut();
+    } catch (error) {
+      setSignOutError(
+        getAuthErrorMessage(
+          error,
+          "No se pudo cerrar la sesión. Inténtalo de nuevo.",
+        ),
+      );
+    } finally {
+      setIsSigningOut(false);
+    }
+  };
+
+  // Get user display name: firstName, fullName, or email
+  const displayName =
+    user?.firstName ||
+    user?.fullName ||
+    user?.emailAddresses[0]?.emailAddress ||
+    "User";
 
   return (
     <SafeAreaViewStyled className="flex-1 bg-background p-5">
@@ -49,12 +87,47 @@ export default function App() {
         renderSectionHeader={({ section }) => (
           <ListHeading title={section.title} />
         )}
+        ListFooterComponent={
+          <View className="mt-8 mb-24">
+            <Pressable
+              className={`min-h-12 flex-row items-center justify-center rounded-xl border border-primary/10 bg-primary/5 px-4 ${
+                isSigningOut ? "opacity-60" : "active:opacity-70"
+              }`}
+              onPress={handleSignOut}
+              disabled={isSigningOut}
+              accessibilityRole="button"
+              accessibilityLabel="Cerrar sesión"
+              accessibilityState={{
+                disabled: isSigningOut,
+                busy: isSigningOut,
+              }}
+            >
+              {isSigningOut ? (
+                <ActivityIndicator color="#081126" />
+              ) : (
+                <Text className="font-sans-semibold text-primary">
+                  Cerrar sesión
+                </Text>
+              )}
+            </Pressable>
+            {signOutError ? (
+              <Text className="mt-3 text-center font-sans text-destructive">
+                {signOutError}
+              </Text>
+            ) : null}
+          </View>
+        }
         ListHeaderComponent={
           <View>
             <View className="home-header">
               <View className="home-user">
-                <Image source={images.avatar} className="home-avatar" />
-                <Text className="home-user-name">{HOME_USER.name}</Text>
+                <Image
+                  source={
+                    user?.imageUrl ? { uri: user.imageUrl } : images.avatar
+                  }
+                  className="home-avatar"
+                />
+                <Text className="home-user-name">{displayName}</Text>
               </View>
               <Image source={icons.add} className="home-add-icon" />
             </View>

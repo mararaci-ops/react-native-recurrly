@@ -25,6 +25,20 @@ In the output, you'll find options to open the app in a
 
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
+## Clerk authentication
+
+Create a Clerk application and configure it to:
+
+1. Enable the **Native API** in the Clerk Dashboard under **Native applications**.
+2. Enable email and password for sign-up and sign-in, and require email verification by code at sign-up.
+3. Add the application's publishable key to a local `.env` file:
+
+   ```env
+   EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+   ```
+
+The custom screens support email verification, password reset, and email/SMS codes, authenticator codes, backup codes, passkeys, and device-trust verification. Sign-up stores the entered name in the user's `unsafeMetadata.displayName` field so it does not depend on optional name fields being enabled in Clerk. Do not commit `.env` or place a Clerk secret key in any `EXPO_PUBLIC_` variable.
+
 ## Tipografía Plus Jakarta Sans
 
 Las variantes `.ttf` se guardan en `assets/fonts` y se cargan al inicio desde

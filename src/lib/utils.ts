@@ -1,4 +1,14 @@
-import dayjs from "dayjs";
+const utcDateFormatter = new Intl.DateTimeFormat("es-ES", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+  timeZone: "UTC",
+});
+
+const formatUtcDate = (date?: Date): string => {
+  if (!date || Number.isNaN(date.getTime())) return "Not provided";
+  return utcDateFormatter.format(date);
+};
 
 export const formatCurrency = (value: number, currency = "USD"): string => {
   try {
@@ -32,27 +42,16 @@ export const formatoMoneda = (
 
 export const formatSubscriptionDateTime = (value?: string): string => {
   if (!value) return "Not provided";
-  const parsedDate = dayjs(value);
-  return parsedDate.isValid()
-    ? parsedDate.format("DD/MM/YYYY")
-    : "Not provided";
+  return formatUtcDate(new Date(value));
 };
 
 export const formatoFechaString = (value?: string): string => {
   if (!value) return "Not provided";
-  const date = new Date(value);
-  return formatoFecha(date);
+  return formatUtcDate(new Date(value));
 };
 
 export const formatoFecha = (date?: Date): string => {
-  if (!date) return "Not provided";
-  if (Number.isNaN(date.getTime())) return "Not provided";
-  return new Intl.DateTimeFormat("es-ES", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    timeZone: "UTC",
-  }).format(date);
+  return formatUtcDate(date);
 };
 
 export const formatStatusLabel = (value?: string): string => {
