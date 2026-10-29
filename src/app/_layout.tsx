@@ -1,12 +1,14 @@
 import { fontFamilies } from "@/constants/fonts";
 import "@/global.css";
-import { ClerkProvider, useAuth } from "@clerk/expo";
+import { ClerkProvider, useAuth, useUser } from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { Stack, usePathname } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import { PostHogProvider } from "posthog-react-native";
+import { useEffect, useRef } from "react";
 import { Alert, Platform } from "react-native";
+import { posthog } from "@/lib/posthog";
 
 if (Platform.OS !== "web") {
   SplashScreen.preventAutoHideAsync();
@@ -18,8 +20,45 @@ if (!publishableKey) {
   throw new Error("Añadir la clave Publishable de Clerk al archivo .env");
 }
 
+function PostHogIdentity() {
+  const { isLoaded, user } = useUser();
+  const identifiedUserId = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!posthog || !isLoaded) return;
+
+    if (!user) {
+      if (identifiedUserId.current) {
+        posthog.reset();
+        identifiedUserId.current = null;
+      }
+      return;
+    }
+
+    if (identifiedUserId.current === user.id) return;
+
+    if (identifiedUserId.current) {
+      posthog.reset();
+    }
+
+    const email = user.primaryEmailAddress?.emailAddress;
+    const name = user.fullName ?? user.firstName;
+
+    posthog.identify(user.id, {
+      $set: {
+        ...(email ? { email } : {}),
+        ...(name ? { name } : {}),
+      },
+    });
+    identifiedUserId.current = user.id;
+  }, [isLoaded, user]);
+
+  return null;
+}
+
 function RootLayoutContent() {
   const { isLoaded: authLoaded } = useAuth();
+  const pathname = usePathname();
   const [fontsLoaded, fontError] = useFonts({
     [fontFamilies.regular]: require("../../assets/fonts/PlusJakartaSans-Regular.ttf"),
     [fontFamilies.light]: require("../../assets/fonts/PlusJakartaSans-Light.ttf"),
@@ -41,15 +80,33 @@ function RootLayoutContent() {
     }
   }, [fontError]);
 
+  useEffect(() => {
+    if (posthog && fontsLoaded && authLoaded) {
+      posthog.screen(pathname);
+    }
+  }, [authLoaded, fontsLoaded, pathname]);
+
   if (!fontsLoaded || !authLoaded) return null;
 
   return <Stack screenOptions={{ headerShown: false }} />;
 }
 
 export default function RootLayout() {
+  const content = <RootLayoutContent />;
+
   return (
     <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
-      <RootLayoutContent />
+      <PostHogIdentity />
+      {posthog ? (
+        <PostHogProvider
+          client={posthog}
+          autocapture={{ captureScreens: false, captureTouches: true }}
+        >
+          {content}
+        </PostHogProvider>
+      ) : (
+        content
+      )}
     </ClerkProvider>
   );
 }

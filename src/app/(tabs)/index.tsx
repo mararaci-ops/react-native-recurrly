@@ -10,6 +10,7 @@ import { icons } from "@/constants/icons";
 import images from "@/constants/images";
 import { SafeAreaViewStyled } from "@/constants/pages";
 import { getAuthErrorMessage } from "@/lib/auth";
+import { posthog } from "@/lib/posthog";
 import { formatoFechaString, formatoMoneda } from "@/lib/utils";
 import { useAuth, useUser } from "@clerk/expo";
 import { useState } from "react";
@@ -45,6 +46,7 @@ export default function App() {
     setSignOutError("");
 
     try {
+      posthog?.capture("user_signed_out");
       await signOut();
     } catch (error) {
       setSignOutError(
@@ -74,11 +76,18 @@ export default function App() {
           <SubscriptionCard
             {...item}
             expanded={expandedSubscriptionId === item.id}
-            onPress={() =>
+            onPress={() => {
+              if (expandedSubscriptionId !== item.id) {
+                posthog?.capture("subscription_details_expanded", {
+                  category: item.category ?? null,
+                  billing_interval: item.billing,
+                  status: item.status ?? null,
+                });
+              }
               setExpandedSubscriptionId((currentId) =>
                 currentId === item.id ? null : item.id,
-              )
-            }
+              );
+            }}
           />
         )}
         extraData={expandedSubscriptionId}

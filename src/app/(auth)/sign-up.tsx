@@ -2,6 +2,7 @@ import { AuthButton } from "@/components/auth/AuthButton";
 import { AuthField } from "@/components/auth/AuthField";
 import { AuthScreen } from "@/components/auth/AuthScreen";
 import { getAuthErrorMessage, isValidEmail } from "@/lib/auth";
+import { posthog, posthogLogger } from "@/lib/posthog";
 import { useSignUp } from "@clerk/expo";
 import { Link, router } from "expo-router";
 import { useState } from "react";
@@ -32,6 +33,10 @@ export default function SignUpScreen() {
       return;
     }
 
+    posthog?.capture("account_created");
+    posthogLogger.info("account creation completed", {
+      registration_outcome: "success",
+    });
     router.replace("/(tabs)");
   };
 

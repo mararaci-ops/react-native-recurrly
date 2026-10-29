@@ -2,6 +2,7 @@ import { AuthButton } from "@/components/auth/AuthButton";
 import { AuthField } from "@/components/auth/AuthField";
 import { AuthScreen } from "@/components/auth/AuthScreen";
 import { getAuthErrorMessage, isValidEmail } from "@/lib/auth";
+import { posthog, posthogLogger } from "@/lib/posthog";
 import { useSignIn } from "@clerk/expo";
 import { Link, router } from "expo-router";
 import { useState } from "react";
@@ -63,13 +64,24 @@ export default function SignInScreen() {
     setNotice("");
   };
 
-  const finishSignIn = async () => {
+  const finishSignIn = async (isPasswordReset = false) => {
     const { error } = await signIn.finalize();
     if (error) {
       showError(error, "No se pudo iniciar sesión. Inténtalo de nuevo.");
       return;
     }
 
+    if (isPasswordReset) {
+      posthog?.capture("password_reset_completed");
+      posthogLogger.info("password reset completed", {
+        authentication_outcome: "success",
+      });
+    } else {
+      posthog?.capture("user_signed_in");
+      posthogLogger.info("sign in completed", {
+        authentication_outcome: "success",
+      });
+    }
     router.replace("/(tabs)");
   };
 
@@ -191,6 +203,7 @@ export default function SignInScreen() {
         return;
       }
 
+      posthog?.capture("password_reset_requested");
       setCode("");
       setStep("reset-code");
       setNotice("Te enviamos un código de recuperación a tu correo.");
@@ -249,7 +262,7 @@ export default function SignInScreen() {
       }
 
       if (signIn.status === "complete") {
-        await finishSignIn();
+        await finishSignIn(true);
         return;
       }
 
