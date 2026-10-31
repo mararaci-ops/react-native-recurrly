@@ -1,20 +1,18 @@
 import CreateSubscriptionModal from "@/components/CreateSubscriptionModal";
 import ListHeading from "@/components/ListHeading";
 import SubscriptionCard from "@/components/SubscriptionCard";
-import { useSubscriptions } from "@/components/SubscriptionProvider";
 import UpcomingSubscriptionCard from "@/components/UpcomingSubscriptionCard";
-import {
-  HOME_BALANCE,
-  UPCOMING_SUBSCRIPTIONS,
-} from "@/constants/data";
+import { HOME_BALANCE } from "@/constants/data";
 import { icons } from "@/constants/icons";
 import images from "@/constants/images";
 import { SafeAreaViewStyled } from "@/constants/pages";
 import { getAuthErrorMessage } from "@/lib/auth";
-import { posthog } from "@/lib/posthog";
+import { posthog, signOutWithTracking } from "@/lib/posthog";
+import { useSubscriptionStore } from "@/store/subscriptionStore";
 import { formatoFechaString, formatoMoneda } from "@/lib/utils";
 import { useAuth, useUser } from "@clerk/expo";
-import { useState } from "react";
+import dayjs from "dayjs";
+import { useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -28,13 +26,39 @@ import {
 export default function App() {
   const { signOut } = useAuth();
   const { user } = useUser();
-  const { subscriptions, addSubscription } = useSubscriptions();
+  const subscriptions = useSubscriptionStore((state) => state.subscriptions);
+  const addSubscription = useSubscriptionStore((state) => state.addSubscription);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [signOutError, setSignOutError] = useState("");
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [expandedSubscriptionId, setExpandedSubscriptionId] = useState<
     string | null
   >(null);
+  const upcomingSubscriptions = useMemo(() => {
+    const today = dayjs().startOf("day");
+
+    return subscriptions
+      .filter((subscription) => {
+        if (subscription.status !== "active" || !subscription.renewalDate) {
+          return false;
+        }
+
+        const renewalDate = dayjs(subscription.renewalDate);
+        return renewalDate.isValid() && !renewalDate.isBefore(today, "day");
+      })
+      .map((subscription) => ({
+        ...subscription,
+        daysLeft: Math.max(
+          0,
+          dayjs(subscription.renewalDate).startOf("day").diff(today, "day"),
+        ),
+      }))
+      .sort(
+        (first, second) =>
+          dayjs(first.renewalDate).valueOf() -
+          dayjs(second.renewalDate).valueOf(),
+      );
+  }, [subscriptions]);
   const subscriptionSections = [
     {
       key: "subscriptions",
@@ -48,8 +72,7 @@ export default function App() {
     setSignOutError("");
 
     try {
-      posthog?.capture("user_signed_out");
-      await signOut();
+      await signOutWithTracking(() => signOut());
     } catch (error) {
       setSignOutError(
         getAuthErrorMessage(
@@ -164,8 +187,8 @@ export default function App() {
             <View className="mb-5">
               <ListHeading title={"Próximas"} />
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {UPCOMING_SUBSCRIPTIONS.length > 0 ? (
-                  UPCOMING_SUBSCRIPTIONS.map((item) => (
+                {upcomingSubscriptions.length > 0 ? (
+                  upcomingSubscriptions.map((item) => (
                     <UpcomingSubscriptionCard key={item.id} {...item} />
                   ))
                 ) : (

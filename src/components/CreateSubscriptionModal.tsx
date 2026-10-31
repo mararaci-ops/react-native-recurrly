@@ -96,7 +96,7 @@ export default function CreateSubscriptionModal({
     posthog?.capture("subscription_created", {
       billing_interval: frequency,
       subscription_name: name.trim(),
-      subscription_price: price,
+      subscription_price: parsedPrice,
       subscription_frequency: frequency,
       subscription_category: category,
     });

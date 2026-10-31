@@ -1,5 +1,4 @@
 import TabIconLayout from "@/components/TabIconLayout";
-import { SubscriptionProvider } from "@/components/SubscriptionProvider";
 import { AuthLoadingScreen } from "@/components/auth/AuthLoadingScreen";
 import { tabs } from "@/constants/data";
 import { colors, components } from "@/constants/theme";
@@ -29,46 +28,44 @@ export default function TabsLayout() {
   }
 
   return (
-    <SubscriptionProvider>
-      <Tabs
-        screenOptions={{
-          headerShown: false,
-          tabBarShowLabel: false,
-          tabBarStyle: {
-            position: "absolute",
-            bottom: Math.max(insets.bottom, tabBar.horizontalInset),
-            height: tabBar.height,
-            marginHorizontal: tabBar.horizontalInset,
-            borderRadius: tabBar.radius,
-            backgroundColor: colors.primary,
-            borderTopWidth: 0,
-            elevation: 0,
-          },
-          tabBarItemStyle: {
-            paddingVertical: tabBar.itemPaddingVertical,
-          },
-          tabBarIconStyle: {
-            width: tabBar.iconFrame,
-            height: tabBar.iconFrame,
-            alignItems: "center",
-          },
-        }}
-      >
-        {tabs.map((tab) => (
-          <Tabs.Screen
-            key={tab.name}
-            name={tab.name}
-            options={{
-              title: tab.title,
-              tabBarAccessibilityLabel: tab.title,
-              tabBarIcon: ({ focused }) => (
-                <TabIconLayout focused={focused} icon={tab.icon} />
-              ),
-            }}
-          />
-        ))}
-        <Tabs.Screen name="subscriptions/[id]" options={{ href: null }} />
-      </Tabs>
-    </SubscriptionProvider>
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarShowLabel: false,
+        tabBarStyle: {
+          position: "absolute",
+          bottom: Math.max(insets.bottom, tabBar.horizontalInset),
+          height: tabBar.height,
+          marginHorizontal: tabBar.horizontalInset,
+          borderRadius: tabBar.radius,
+          backgroundColor: colors.primary,
+          borderTopWidth: 0,
+          elevation: 0,
+        },
+        tabBarItemStyle: {
+          paddingVertical: tabBar.itemPaddingVertical,
+        },
+        tabBarIconStyle: {
+          width: tabBar.iconFrame,
+          height: tabBar.iconFrame,
+          alignItems: "center",
+        },
+      }}
+    >
+      {tabs.map((tab) => (
+        <Tabs.Screen
+          key={tab.name}
+          name={tab.name}
+          options={{
+            title: tab.title,
+            tabBarAccessibilityLabel: tab.title,
+            tabBarIcon: ({ focused }) => (
+              <TabIconLayout focused={focused} icon={tab.icon} />
+            ),
+          }}
+        />
+      ))}
+      <Tabs.Screen name="subscriptions/[id]" options={{ href: null }} />
+    </Tabs>
   );
 }

@@ -1,7 +1,7 @@
 import SubscriptionCard from "@/components/SubscriptionCard";
-import { useSubscriptions } from "@/components/SubscriptionProvider";
 import { SafeAreaViewStyled } from "@/constants/pages";
 import { posthog } from "@/lib/posthog";
+import { useSubscriptionStore } from "@/store/subscriptionStore";
 import { useEffect, useMemo, useState } from "react";
 import {
   FlatList,
@@ -24,7 +24,7 @@ const sortOptions: { label: string; value: SortField }[] = [
 ];
 
 const Subscriptions = () => {
-  const { subscriptions: allSubscriptions } = useSubscriptions();
+  const allSubscriptions = useSubscriptionStore((state) => state.subscriptions);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortField, setSortField] = useState<SortField>("name");
   const [sortAscending, setSortAscending] = useState(true);
@@ -73,9 +73,17 @@ const Subscriptions = () => {
         } else if (sortField === "billing") {
           comparison = first.billing.localeCompare(second.billing);
         } else {
-          comparison =
-            new Date(first.renewalDate ?? 0).getTime() -
-            new Date(second.renewalDate ?? 0).getTime();
+          if (!first.renewalDate && !second.renewalDate) {
+            comparison = 0;
+          } else if (!first.renewalDate) {
+            comparison = 1;
+          } else if (!second.renewalDate) {
+            comparison = -1;
+          } else {
+            comparison =
+              new Date(first.renewalDate).getTime() -
+              new Date(second.renewalDate).getTime();
+          }
         }
 
         return sortAscending ? comparison : -comparison;

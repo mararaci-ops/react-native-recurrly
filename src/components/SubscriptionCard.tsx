@@ -59,6 +59,7 @@ const SubscriptionCard = ({
               <View className="sub-row-copy">
                 <Text className="sub-label">Payment:</Text>
                 <Text
+                  {...{ "ph-no-capture": true }}
                   className="sub-value"
                   numberOfLines={1}
                   ellipsizeMode="tail"

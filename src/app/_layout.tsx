@@ -8,7 +8,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { PostHogProvider } from "posthog-react-native";
 import { useEffect, useRef } from "react";
 import { Alert, Platform } from "react-native";
-import { posthog } from "@/lib/posthog";
+import { posthog, resetPostHogIdentity } from "@/lib/posthog";
 
 if (Platform.OS !== "web") {
   SplashScreen.preventAutoHideAsync();
@@ -29,7 +29,7 @@ function PostHogIdentity() {
 
     if (!user) {
       if (identifiedUserId.current) {
-        posthog.reset();
+        resetPostHogIdentity();
         identifiedUserId.current = null;
       }
       return;
@@ -38,7 +38,7 @@ function PostHogIdentity() {
     if (identifiedUserId.current === user.id) return;
 
     if (identifiedUserId.current) {
-      posthog.reset();
+      resetPostHogIdentity();
     }
 
     const email = user.primaryEmailAddress?.emailAddress;
