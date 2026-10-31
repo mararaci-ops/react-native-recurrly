@@ -41,8 +41,8 @@ export function captureAiGeneration({
     $ai_provider: provider,
     $ai_input: input,
     $ai_output_choices: outputChoices,
-    $ai_input_tokens: inputTokens,
-    $ai_output_tokens: outputTokens,
-    $ai_latency: latencySeconds,
+    $ai_input_tokens: inputTokens ?? null,
+    $ai_output_tokens: outputTokens ?? null,
+    $ai_latency: latencySeconds ?? null,
   });
 }

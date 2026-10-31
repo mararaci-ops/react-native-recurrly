@@ -29,14 +29,14 @@ type SubscriptionCategory = (typeof categories)[number];
 type SubscriptionFrequency = "Monthly" | "Yearly";
 
 const categoryColors: Record<SubscriptionCategory, string> = {
-  Entertainment: "#f5c542",
+  Entertainment: "#ff6b6b",
   "AI Tools": "#b8d4e3",
   "Developer Tools": "#e8def8",
-  Design: "#b8e8d0",
-  Productivity: "#f6d5bd",
+  Design: "#f5c542",
+  Productivity: "#95e1d3",
   Cloud: "#cce4f6",
   Music: "#f6c6d0",
-  Other: "#e8def8",
+  Other: "#d4d4d4",
 };
 
 type CreateSubscriptionModalProps = {
