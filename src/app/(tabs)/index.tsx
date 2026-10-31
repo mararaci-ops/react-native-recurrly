@@ -1,9 +1,10 @@
+import CreateSubscriptionModal from "@/components/CreateSubscriptionModal";
 import ListHeading from "@/components/ListHeading";
 import SubscriptionCard from "@/components/SubscriptionCard";
+import { useSubscriptions } from "@/components/SubscriptionProvider";
 import UpcomingSubscriptionCard from "@/components/UpcomingSubscriptionCard";
 import {
   HOME_BALANCE,
-  HOME_SUBSCRIPTIONS,
   UPCOMING_SUBSCRIPTIONS,
 } from "@/constants/data";
 import { icons } from "@/constants/icons";
@@ -24,22 +25,23 @@ import {
   View,
 } from "react-native";
 
-const subscriptionSections = [
-  {
-    key: "subscriptions",
-    title: "Todas las suscripciones",
-    data: HOME_SUBSCRIPTIONS,
-  },
-];
-
 export default function App() {
   const { signOut } = useAuth();
   const { user } = useUser();
+  const { subscriptions, addSubscription } = useSubscriptions();
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [signOutError, setSignOutError] = useState("");
+  const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [expandedSubscriptionId, setExpandedSubscriptionId] = useState<
     string | null
   >(null);
+  const subscriptionSections = [
+    {
+      key: "subscriptions",
+      title: "All Subscriptions",
+      data: subscriptions,
+    },
+  ];
 
   const handleSignOut = async () => {
     setIsSigningOut(true);
@@ -138,7 +140,13 @@ export default function App() {
                 />
                 <Text className="home-user-name">{displayName}</Text>
               </View>
-              <Image source={icons.add} className="home-add-icon" />
+              <Pressable
+                onPress={() => setIsCreateModalVisible(true)}
+                accessibilityRole="button"
+                accessibilityLabel="Create a subscription"
+              >
+                <Image source={icons.add} className="home-add-icon" />
+              </Pressable>
             </View>
 
             <View className="home-balance-card">
@@ -169,6 +177,11 @@ export default function App() {
             </View>
           </View>
         }
+      />
+      <CreateSubscriptionModal
+        visible={isCreateModalVisible}
+        onClose={() => setIsCreateModalVisible(false)}
+        onCreate={addSubscription}
       />
     </SafeAreaViewStyled>
   );

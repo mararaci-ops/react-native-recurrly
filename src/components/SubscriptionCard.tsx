@@ -1,7 +1,7 @@
 import {
-    formatoMoneda,
-    formatStatusLabel,
-    formatSubscriptionDateTime,
+  formatoMoneda,
+  formatStatusLabel,
+  formatSubscriptionDateTime,
 } from "@/lib/utils";
 import { clsx } from "clsx";
 import { Image, Pressable, Text, View } from "react-native";
@@ -36,9 +36,10 @@ const SubscriptionCard = ({
               {name}
             </Text>
             <Text numberOfLines={1} ellipsizeMode="tail" className="sub-meta">
-              {category?.trim() ||
-                plan?.trim() ||
-                (renewalDate ? formatSubscriptionDateTime(renewalDate) : "")}
+              {category?.trim() || plan?.trim() || ""}
+            </Text>
+            <Text className="sub-meta" numberOfLines={1} ellipsizeMode="tail">
+              {renewalDate ? formatSubscriptionDateTime(renewalDate) : ""}
             </Text>
           </View>
         </View>
