@@ -110,7 +110,6 @@ export default function SignInScreen() {
         emailAddress: normalizedEmail,
         password,
       });
-      console.log(handleSignIn, error);
       if (error) {
         showError(error, "No se pudo iniciar sesión. Revisa tus datos.");
         return;

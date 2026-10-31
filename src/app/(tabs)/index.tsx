@@ -8,14 +8,14 @@ import images from "@/constants/images";
 import { SafeAreaViewStyled } from "@/constants/pages";
 import { getAuthErrorMessage } from "@/lib/auth";
 import { posthog, signOutWithTracking } from "@/lib/posthog";
-import { useSubscriptionStore } from "@/store/subscriptionStore";
 import { formatoFechaString, formatoMoneda } from "@/lib/utils";
+import { useSubscriptionStore } from "@/store/subscriptionStore";
 import { useAuth, useUser } from "@clerk/expo";
 import dayjs from "dayjs";
 import { useEffect, useMemo, useState } from "react";
 import {
-  AppState,
   ActivityIndicator,
+  AppState,
   Image,
   Pressable,
   ScrollView,
@@ -28,16 +28,16 @@ export default function App() {
   const { signOut } = useAuth();
   const { user } = useUser();
   const subscriptions = useSubscriptionStore((state) => state.subscriptions);
-  const addSubscription = useSubscriptionStore((state) => state.addSubscription);
+  const addSubscription = useSubscriptionStore(
+    (state) => state.addSubscription,
+  );
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [signOutError, setSignOutError] = useState("");
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [expandedSubscriptionId, setExpandedSubscriptionId] = useState<
     string | null
   >(null);
-  const [currentDate, setCurrentDate] = useState(() =>
-    dayjs().startOf("day"),
-  );
+  const [currentDate, setCurrentDate] = useState(() => dayjs().startOf("day"));
 
   useEffect(() => {
     let midnightTimeout: ReturnType<typeof setTimeout>;
@@ -82,7 +82,10 @@ export default function App() {
         const renewalDate = dayjs(subscription.renewalDate);
         return (
           renewalDate.isValid() &&
-          !renewalDate.isBefore(currentDate, "day")
+          !renewalDate.isBefore(currentDate, "day") &&
+          dayjs(subscription.renewalDate)
+            .startOf("day")
+            .diff(currentDate, "month") <= 2
         );
       })
       .map((subscription) => ({
@@ -225,7 +228,7 @@ export default function App() {
               </View>
             </View>
 
-            <View className="mb-5">
+            <View className="mb-2">
               <ListHeading title={"Próximas"} />
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {upcomingSubscriptions.length > 0 ? (
