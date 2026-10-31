@@ -12,8 +12,9 @@ import { useSubscriptionStore } from "@/store/subscriptionStore";
 import { formatoFechaString, formatoMoneda } from "@/lib/utils";
 import { useAuth, useUser } from "@clerk/expo";
 import dayjs from "dayjs";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
+  AppState,
   ActivityIndicator,
   Image,
   Pressable,
@@ -34,9 +35,44 @@ export default function App() {
   const [expandedSubscriptionId, setExpandedSubscriptionId] = useState<
     string | null
   >(null);
-  const upcomingSubscriptions = useMemo(() => {
-    const today = dayjs().startOf("day");
+  const [currentDate, setCurrentDate] = useState(() =>
+    dayjs().startOf("day"),
+  );
 
+  useEffect(() => {
+    let midnightTimeout: ReturnType<typeof setTimeout>;
+
+    const updateCurrentDate = () => {
+      setCurrentDate(dayjs().startOf("day"));
+      clearTimeout(midnightTimeout);
+      const millisecondsUntilMidnight = dayjs()
+        .add(1, "day")
+        .startOf("day")
+        .diff(dayjs());
+      midnightTimeout = setTimeout(
+        updateCurrentDate,
+        Math.max(millisecondsUntilMidnight + 50, 1),
+      );
+    };
+
+    updateCurrentDate();
+
+    const appStateSubscription = AppState.addEventListener(
+      "change",
+      (state) => {
+        if (state === "active") {
+          updateCurrentDate();
+        }
+      },
+    );
+
+    return () => {
+      clearTimeout(midnightTimeout);
+      appStateSubscription.remove();
+    };
+  }, []);
+
+  const upcomingSubscriptions = useMemo(() => {
     return subscriptions
       .filter((subscription) => {
         if (subscription.status !== "active" || !subscription.renewalDate) {
@@ -44,13 +80,18 @@ export default function App() {
         }
 
         const renewalDate = dayjs(subscription.renewalDate);
-        return renewalDate.isValid() && !renewalDate.isBefore(today, "day");
+        return (
+          renewalDate.isValid() &&
+          !renewalDate.isBefore(currentDate, "day")
+        );
       })
       .map((subscription) => ({
         ...subscription,
         daysLeft: Math.max(
           0,
-          dayjs(subscription.renewalDate).startOf("day").diff(today, "day"),
+          dayjs(subscription.renewalDate)
+            .startOf("day")
+            .diff(currentDate, "day"),
         ),
       }))
       .sort(
@@ -58,7 +99,7 @@ export default function App() {
           dayjs(first.renewalDate).valueOf() -
           dayjs(second.renewalDate).valueOf(),
       );
-  }, [subscriptions]);
+  }, [currentDate, subscriptions]);
   const subscriptionSections = [
     {
       key: "subscriptions",
