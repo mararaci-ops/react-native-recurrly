@@ -2,6 +2,7 @@ import { AuthLoadingScreen } from "@/components/auth/AuthLoadingScreen";
 import images from "@/constants/images";
 import { SafeAreaViewStyled } from "@/constants/pages";
 import { getAuthErrorMessage } from "@/lib/auth";
+import { signOutWithTracking } from "@/lib/posthog";
 import { formatoFecha } from "@/lib/utils";
 import { useAuth, useSession, useUser } from "@clerk/expo";
 import { useState } from "react";
@@ -39,7 +40,7 @@ export default function Settings() {
     setSignOutError("");
 
     try {
-      await signOut();
+      await signOutWithTracking(() => signOut());
     } catch (error) {
       setSignOutError(
         getAuthErrorMessage(

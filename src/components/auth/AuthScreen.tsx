@@ -30,7 +30,8 @@ export function AuthScreen({
       >
         <ScrollView
           className="flex-1"
-          contentContainerClassName="grow justify-start px-6 py-8"
+          contentContainerClassName="grow justify-start px-6 pt-8 pb-41"
+          scrollsChildToFocus={Platform.OS === "android"}
           keyboardShouldPersistTaps="handled"
         >
           <View className="w-full max-w-md">

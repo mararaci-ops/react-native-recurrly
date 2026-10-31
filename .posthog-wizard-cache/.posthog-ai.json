@@ -1,0 +1,5 @@
+{
+  "provider": "manual-capture",
+  "package": "posthog-react-native",
+  "otel_init_file": "src/lib/ai-observability.ts"
+}
